@@ -1,15 +1,25 @@
 package com.Krish.demo.StudentServer;
 
+import jakarta.persistence.*;
+@Entity
+@Table(name = "student")
 public class StudentDet {
-    int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
     String name;
     int age;
-
+    public StudentDet(){}
+    StudentDet(Integer id,String name,int age){
+        this.id = id;
+        this.name = name;
+        this.age= age;
+    }
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

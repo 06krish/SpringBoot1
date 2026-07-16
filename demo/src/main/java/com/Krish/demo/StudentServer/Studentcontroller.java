@@ -15,7 +15,7 @@ public class Studentcontroller {
         this.studentservice = studentservice;
     }
     @PostMapping("/create")
-    public ResponseEntity<StudentDet> storeStudent(@RequestBody StudentDet student){
+  public ResponseEntity<StudentDet> storeStudent(@RequestBody StudentDet student){
        StudentDet result = studentservice.studentvalidate(student);
        if(result == null){
            return ResponseEntity.status(400).body(null);
@@ -23,4 +23,9 @@ public class Studentcontroller {
        return ResponseEntity.status(201).body(result);
 
     }
+    public StudentDet savestudent(){
+        StudentDet student = new StudentDet(1,"krish",21);
+        return StudnetRepository.save(student);
+    }
+
 }
