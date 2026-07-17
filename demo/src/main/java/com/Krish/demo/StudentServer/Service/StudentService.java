@@ -5,29 +5,37 @@ import com.Krish.demo.StudentServer.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class StudentService {
-    StudentRepository studentRepository;
+
+    private final StudentRepository studentRepository;
 
     @Autowired
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
 
-    public Student studentValidate(Student student) {
+    public List<Student> studentValidate(List<Student> students) {
 
-        int id = student.getId();
-        String name = student.getName();
-        int age = student.getAge();
-        String department = student.getDepartment();
+        List<Student> validStudents = new ArrayList<>();
 
-        if (id < 0 || name == null || age < 0 || department == null) {
-            return null;
+        for (Student student : students) {
+
+            if (student.getId() <= 0
+                    || student.getName() == null || student.getName().trim().isEmpty()
+                    || student.getAge() <= 0
+                    || student.getDepartment() == null || student.getDepartment().trim().isEmpty()) {
+
+                continue;   // Skip invalid student
+            }
+
+            validStudents.add(student);
         }
 
-        studentRepository.save(student);
-        return student;
-
+        return studentRepository.saveAll(validStudents);
     }
 
     public Student getStudentById(int id) {

@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@RequestMapping("/students")
 public class StudentController {
 
-    StudentService studentService;
+    private final StudentService studentService;
 
     @Autowired
     public StudentController(StudentService studentService) {
@@ -17,19 +20,29 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> storeStudent(@RequestBody Student student) {
-        Student result = studentService.studentValidate(student);
+    // here this question mark is called wildcard generic means
+    // we don't know which type we are going to send.
+    // any type can be sent
+    public ResponseEntity<?> storeStudents(@RequestBody List<Student> students) {
 
-        if(result == null)
-        {
-           return ResponseEntity.status(400).body("Invalid input");
+        List<Student> result = studentService.studentValidate(students);
+
+        if (result.isEmpty()) {
+            return ResponseEntity.badRequest().body("No valid students found.");
         }
-        return  ResponseEntity.status(201).body(result);
+
+        return ResponseEntity.status(201).body(result);
     }
 
-    @GetMapping("/getStudent/{id}")
-    public ResponseEntity<?> getStudentById(@PathVariable int id){
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getStudentById(@PathVariable int id) {
+
         Student student = studentService.getStudentById(id);
-        return ResponseEntity.status(200).body(student);
+
+        if (student == null) {
+            return ResponseEntity.status(404).body("Student not found.");
+        }
+
+        return ResponseEntity.ok(student);
     }
 }
