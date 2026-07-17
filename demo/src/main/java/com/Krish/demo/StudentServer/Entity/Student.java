@@ -1,25 +1,21 @@
-package com.Krish.demo.StudentServer;
+package com.Krish.demo.StudentServer.Entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 @Entity
-@Table(name = "student")
-public class StudentDet {
+public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    int id;
     String name;
     int age;
-    public StudentDet(){}
-    StudentDet(Integer id,String name,int age){
-        this.id = id;
-        this.name = name;
-        this.age= age;
-    }
+    String department;
+
     public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -45,14 +41,5 @@ public class StudentDet {
 
     public void setDepartment(String department) {
         this.department = department;
-    }
-
-    String department;
-
-    public void setID(int id){
-        this.id = id;
-    }
-    public void setname(String name){
-        this.name = name;
     }
 }
