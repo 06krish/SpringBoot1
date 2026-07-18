@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/students")
@@ -44,5 +45,19 @@ public class StudentController {
         }
 
         return ResponseEntity.ok(student);
+    }
+    @PutMapping("/{id}")
+    public Student updatatedStudent(@PathVariable int id, @RequestBody Student student){
+        return studentService.updateStudent(id,student);
+    }
+
+    // @patch mapping it is used to edit the specific data.
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> patchStudent(@PathVariable int id , @RequestBody Map<String , Object>mp){
+        Student st = studentService.patchStudent(id,mp);
+        if(st == null){
+            return ResponseEntity.badRequest().body("student not found");
+        }
+        return  ResponseEntity.ok(st);
     }
 }

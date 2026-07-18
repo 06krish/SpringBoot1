@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -40,5 +42,35 @@ public class StudentService {
 
     public Student getStudentById(int id) {
         return studentRepository.findById(id).orElse(null);
+    }
+
+    public Student updateStudent(Integer id , Student existingStudent){
+        Optional<Student> stu = studentRepository.findById(id);
+        if(stu.isPresent()){
+            Student updatedStudent = stu.get();
+            updatedStudent.setName(existingStudent.getName());
+            updatedStudent.setAge(existingStudent.getAge());
+            updatedStudent.setDepartment(existingStudent.getDepartment());
+            return studentRepository.save(updatedStudent);
+        }
+        return null;
+    }
+
+    public Student patchStudent(int id , Map<String,Object>updates){
+        Optional<Student> stu = studentRepository.findById(id);
+        if(stu.isPresent()){
+            Student updatedStudent = stu.get();
+            if(updates.containsKey("name")){
+                updatedStudent.setName((String)updates.get("name"));
+            }
+            if(updates.containsKey("age")){
+                updatedStudent.setAge((Integer)updates.get("age"));
+            }
+            if(updates.containsKey("department")){
+                updatedStudent.setDepartment((String)updates.get("department"));
+            }
+            return studentRepository.save(updatedStudent);
+        }
+        return null;
     }
 }
