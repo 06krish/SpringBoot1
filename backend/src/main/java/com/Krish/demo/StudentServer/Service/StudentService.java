@@ -1,6 +1,7 @@
 package com.Krish.demo.StudentServer.Service;
 
 import com.Krish.demo.StudentServer.Entity.Student;
+import com.Krish.demo.StudentServer.Exception.StudentNotFoundException;
 import com.Krish.demo.StudentServer.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,8 +41,11 @@ public class StudentService {
         return studentRepository.saveAll(validStudents);
     }
 
-    public Student getStudentById(int id)throws Exception{
+    public Student getStudentById(int id)throws StudentNotFoundException {
         Optional<Student> st =  studentRepository.findById(id);
+        if(st.isEmpty()){
+            throw new StudentNotFoundException("Student not found with id " +  id);
+        }
         return st.get();
     }
 
