@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+// Added @CrossOrigin to allow requests from the frontend client dashboard
+@CrossOrigin
 @RestController
 @RequestMapping("/students")
 public class StudentController {
@@ -36,7 +38,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getStudentById(@PathVariable int id) {
+    public ResponseEntity<?> getStudentById(@PathVariable int id) throws Exception {
 
         Student student = studentService.getStudentById(id);
 
@@ -46,18 +48,29 @@ public class StudentController {
 
         return ResponseEntity.ok(student);
     }
+
     @PutMapping("/{id}")
-    public Student updatatedStudent(@PathVariable int id, @RequestBody Student student){
-        return studentService.updateStudent(id,student);
+    public Student updatatedStudent(@PathVariable int id, @RequestBody Student student) {
+        return studentService.updateStudent(id, student);
     }
 
     // @patch mapping it is used to edit the specific data.
     @PatchMapping("/{id}")
-    public ResponseEntity<?> patchStudent(@PathVariable int id , @RequestBody Map<String , Object>mp){
-        Student st = studentService.patchStudent(id,mp);
-        if(st == null){
+    public ResponseEntity<?> patchStudent(@PathVariable int id, @RequestBody Map<String, Object> mp) {
+        Student st = studentService.patchStudent(id, mp);
+        if (st == null) {
             return ResponseEntity.badRequest().body("student not found");
         }
-        return  ResponseEntity.ok(st);
+        return ResponseEntity.ok(st);
+    }
+
+    // Added @DeleteMapping mapping to withdraw records from the registry database
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteStudent(@PathVariable int id) {
+        boolean deleted = studentService.deleteStudent(id);
+        if (deleted) {
+            return ResponseEntity.ok("Record successfully withdrawn.");
+        }
+        return ResponseEntity.status(404).body("Student record not found.");
     }
 }

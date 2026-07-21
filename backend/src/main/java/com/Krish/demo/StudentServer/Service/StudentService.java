@@ -31,7 +31,7 @@ public class StudentService {
                     || student.getAge() <= 0
                     || student.getDepartment() == null || student.getDepartment().trim().isEmpty()) {
 
-                continue;   // Skip invalid student
+                continue; // Skip invalid student
             }
 
             validStudents.add(student);
@@ -40,13 +40,14 @@ public class StudentService {
         return studentRepository.saveAll(validStudents);
     }
 
-    public Student getStudentById(int id) {
-        return studentRepository.findById(id).orElse(null);
+    public Student getStudentById(int id)throws Exception{
+        Optional<Student> st =  studentRepository.findById(id);
+        return st.get();
     }
 
-    public Student updateStudent(Integer id , Student existingStudent){
+    public Student updateStudent(Integer id, Student existingStudent) {
         Optional<Student> stu = studentRepository.findById(id);
-        if(stu.isPresent()){
+        if (stu.isPresent()) {
             Student updatedStudent = stu.get();
             updatedStudent.setName(existingStudent.getName());
             updatedStudent.setAge(existingStudent.getAge());
@@ -56,21 +57,31 @@ public class StudentService {
         return null;
     }
 
-    public Student patchStudent(int id , Map<String,Object>updates){
+    public Student patchStudent(int id, Map<String, Object> updates) {
         Optional<Student> stu = studentRepository.findById(id);
-        if(stu.isPresent()){
+        if (stu.isPresent()) {
             Student updatedStudent = stu.get();
-            if(updates.containsKey("name")){
-                updatedStudent.setName((String)updates.get("name"));
+            if (updates.containsKey("name")) {
+                updatedStudent.setName((String) updates.get("name"));
             }
-            if(updates.containsKey("age")){
-                updatedStudent.setAge((Integer)updates.get("age"));
+            if (updates.containsKey("age")) {
+                updatedStudent.setAge((Integer) updates.get("age"));
             }
-            if(updates.containsKey("department")){
-                updatedStudent.setDepartment((String)updates.get("department"));
+            if (updates.containsKey("department")) {
+                updatedStudent.setDepartment((String) updates.get("department"));
             }
             return studentRepository.save(updatedStudent);
         }
         return null;
+    }
+
+    // Added deleteStudent method to withdraw and delete records by ID from
+    // StudentRepository
+    public boolean deleteStudent(int id) {
+        if (studentRepository.existsById(id)) {
+            studentRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
